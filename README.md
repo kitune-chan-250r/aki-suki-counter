@@ -1,0 +1,3 @@
+# aki-suki-counter
+twitterにてgithubへあげる予定はあるか、とリプを貰いましたのでgithubの使い方の確認や技術向上の目的を兼ねてあげさせてもらいます。
+
