@@ -11,7 +11,7 @@ from oauth2client.tools import argparser, run_flow
 import requests
 import json
 import time
-import re
+
 
 start_time = time.time()
 channelid = "UCt9qik4Z-_J-rj3bKKQCeHg" #アキくんチャンネル　UCt9qik4Z-_J-rj3bKKQCeHg
@@ -19,14 +19,21 @@ credentials_path = "youtubeapiplac.py-oauth2.json"
 url = "https://www.googleapis.com/youtube/v3/search?part=snippet" 
 url += "&channelId=" + channelid + "&type=video&eventType=live"
 
-switch = True
+count_word = {
+	"アキくんすき" : 0,
+	"アキくん好き" : 0,
+	"アキくんスコポンジ" : 0,
+	"アキくんすし" : 0,
+	"アキくん寿司" : 0
+}
+
 def get_comment(chatids):
 	return chat_dic[chatids]
 
 def live_status():
 	store = Storage(credentials_path)
 	credentials = store.get()
-	http = credentials.authorize(httplib2.Http())#認証情報が入ってる
+	http = credentials.authorize(httplib2.Http())
 	res, data = http.request(url)
 	jtemp = json.loads(data)
 	try:
@@ -42,9 +49,25 @@ def print_live_not_active():
 	sys.stdout.write("\r\033[K" + str_live_not_active)
 	sys.stdout.flush()
 	time.sleep(1)
+
+def aki_suki_counter(comment):
+	for wordbox in count_word:
+		if comment.find(wordbox) >= 0:
+			count_word[wordbox] += 1
+			print("\n###### +1 counted ######\n")
+
+def print_result():
+	print("結果")
+	for temp in count_word.keys():
+		print("{0} = {1}".format(temp,count_word[temp]))
+	suki_num = count_word["アキくんすき"] + count_word["アキくん好き"]
+	print("合計アキくんすき = {0}".format(suki_num))
 	
 #video ID取得
-while switch:
+while True:
+	if not live_status:
+		break
+
 	store = Storage(credentials_path)
 	credentials = store.get()
 
@@ -54,15 +77,12 @@ while switch:
 
 	try:
 		videoid = jtemp["items"][0]["id"]["videoId"]
-	except IndexError:
-		print_live_not_active()
-		continue
-	except KeyError:
+	except (IndexError, KeyError):
 		print_live_not_active()
 		continue
 	else:
 		print("コメント取得を開始します")
-		switch = False
+		break
 
 #チャットID取得
 get_chatid_url = "https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id="
@@ -73,11 +93,6 @@ jchatid_tmp = json.loads(chatid_tmp[1])
 
 chatid = jchatid_tmp["items"][0]["liveStreamingDetails"]["activeLiveChatId"]
 #コメント内でカウントする言葉
-aki_suki = "アキくんすき"
-aki_suki_2 = "アキくん好き"
-aki_suki_count = 0
-aki_suki_count_old = 0
-pagetoken = None
 commentlist = []
 
 #チャットIDを元にチャットデータを取得
@@ -89,15 +104,7 @@ chatid_list = []
 chatid_list_set_old = set([])
 chat_dic = {}
 
-switch = True
-while switch:
-	if pagetoken:
-		get_chat_url += "&pageToken=" + pagetoken
-
-	check_livestatus = live_status()
-	if check_livestatus == False:
-		switch = False
-
+while live_status():
 	commentlist.clear()
 	jchat_data = http.request(get_chat_url)
 	chat_data = json.loads(jchat_data[1])
@@ -105,7 +112,7 @@ while switch:
 	try:
 		discri = chat_data["items"]
 	except IndexError:
-		switch = False
+		break
 	else: 
 		for chatbox in chat_data["items"]:
 			try:
@@ -122,15 +129,14 @@ while switch:
 		ava_c_id = list(available_chatid)
 		#アキくんすき判定
 		for idbox in ava_c_id:
-			sys.stdout.write("\r\033[K" + get_comment(idbox) + "\n>>now count=" + str(aki_suki_count))
+			sys.stdout.write("\r\033[K" + get_comment(idbox) + "\n>>now count=" \
+							+ str(count_word["アキくんすき"] + count_word["アキくん好き"]))
 			sys.stdout.flush()
-			if get_comment(idbox).find(aki_suki) >= 0 or get_comment(idbox).find(aki_suki_2) >= 0:
-				aki_suki_count += 1
-				print("###### +1 counted ######")
+			aki_suki_counter(idbox)
 		chatid_list_set_old = chatid_list_set	
 		time.sleep(3.5)
 		
-print(aki_suki_count)
+print_result()
 
 """
 アキくんすし(寿司)
