@@ -1,6 +1,5 @@
 # coding:utf-8
 
-
 import os
 import sys
 import httplib2
@@ -106,42 +105,7 @@ chatid_list_set_old = set([])
 chat_dic = {}
 
 while live_status():
-<<<<<<< HEAD
-<<<<<<< HEAD
-	commentlist.clear()
-	jchat_data = http.request(get_chat_url)
-	chat_data = json.loads(jchat_data[1])
-	
-	try:
-		discri = chat_data["items"]
-	except IndexError:
-		break
-	else: 
-		for chatbox in chat_data["items"]:
-			try:
-				temp = chatbox["snippet"]["textMessageDetails"]["messageText"]
-			except KeyError:
-				print("###### keyerrorが発生 ######")
-				continue
-			chatid_list.append(chatbox["id"])
-			chat_dic[chatbox["id"]] = temp
 
-		chatid_list_set = set(chatid_list)
-		chatid_list.clear()
-		available_chatid = chatid_list_set - chatid_list_set_old
-		ava_c_id = list(available_chatid)
-		#アキくんすき判定
-		for idbox in ava_c_id:
-			sys.stdout.write("\r\033[K" + get_comment(idbox) + "\n>>now count=" \
-							+ str(count_word["アキくんすき"] + count_word["アキくん好き"]))
-			sys.stdout.flush()
-			aki_suki_counter(get_comment(idbox))
-		chatid_list_set_old = chatid_list_set	
-		time.sleep(3.5)
-		
-=======
-=======
->>>>>>> bdc3ab0a01c2937c6861580f425cf1c6150cd48b
     commentlist.clear()
     jchat_data = http.request(get_chat_url)
     chat_data = json.loads(jchat_data[1])
@@ -169,14 +133,9 @@ while live_status():
             sys.stdout.write("\r\033[K" + get_comment(idbox) + "\n>>now count=" \
                             + str(count_word["アキくんすき"] + count_word["アキくん好き"]))
             sys.stdout.flush()
-            aki_suki_counter(idbox)
+            aki_suki_counter(get_comment(idbox))
         chatid_list_set_old = chatid_list_set   
         time.sleep(3.5)
-        
-<<<<<<< HEAD
->>>>>>> bdc3ab0a01c2937c6861580f425cf1c6150cd48b
-=======
->>>>>>> bdc3ab0a01c2937c6861580f425cf1c6150cd48b
 print_result()
 
 """
