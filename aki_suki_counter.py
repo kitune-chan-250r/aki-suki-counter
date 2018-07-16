@@ -107,6 +107,7 @@ chat_dic = {}
 
 while live_status():
 <<<<<<< HEAD
+<<<<<<< HEAD
 	commentlist.clear()
 	jchat_data = http.request(get_chat_url)
 	chat_data = json.loads(jchat_data[1])
@@ -139,6 +140,8 @@ while live_status():
 		time.sleep(3.5)
 		
 =======
+=======
+>>>>>>> bdc3ab0a01c2937c6861580f425cf1c6150cd48b
     commentlist.clear()
     jchat_data = http.request(get_chat_url)
     chat_data = json.loads(jchat_data[1])
@@ -170,6 +173,9 @@ while live_status():
         chatid_list_set_old = chatid_list_set   
         time.sleep(3.5)
         
+<<<<<<< HEAD
+>>>>>>> bdc3ab0a01c2937c6861580f425cf1c6150cd48b
+=======
 >>>>>>> bdc3ab0a01c2937c6861580f425cf1c6150cd48b
 print_result()
 
