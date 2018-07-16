@@ -1,5 +1,6 @@
 # coding:utf-8
 
+
 import os
 import sys
 import httplib2
@@ -11,7 +12,6 @@ from oauth2client.tools import argparser, run_flow
 import requests
 import json
 import time
-
 
 start_time = time.time()
 channelid = "UCt9qik4Z-_J-rj3bKKQCeHg" #アキくんチャンネル　UCt9qik4Z-_J-rj3bKKQCeHg
