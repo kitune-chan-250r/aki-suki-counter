@@ -79,6 +79,7 @@ while True:
 		videoid = jtemp["items"][0]["id"]["videoId"]
 	except (IndexError, KeyError):
 		print_live_not_active()
+		time.sleep(3)
 		continue
 	else:
 		print("コメント取得を開始します")
