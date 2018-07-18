@@ -16,7 +16,7 @@ import re
 
 start_time = time.time()
 
-channelid = "UCJhjE7wbdYAae1G25m0tHAA" #アキくんチャンネル　UCt9qik4Z-_J-rj3bKKQCeHg
+channelid = "UCt9qik4Z-_J-rj3bKKQCeHg" #アキくんチャンネル　UCt9qik4Z-_J-rj3bKKQCeHg
 
 credentials_path = "youtubeapiplac.py-oauth2.json"
 url = "https://www.googleapis.com/youtube/v3/search?part=snippet" 
@@ -34,7 +34,8 @@ count_word = {
 
 def get_comment(chatids):
     return chat_dic[chatids]
-"""
+
+"""apiからライブ状況判別
 def live_status():
     store = Storage(credentials_path)
     credentials = store.get()
