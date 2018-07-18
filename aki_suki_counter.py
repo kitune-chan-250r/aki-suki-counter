@@ -11,12 +11,18 @@ from oauth2client.tools import argparser, run_flow
 import requests
 import json
 import time
+import bs4
+import re
 
 start_time = time.time()
-channelid = "UCt9qik4Z-_J-rj3bKKQCeHg" #アキくんチャンネル　UCt9qik4Z-_J-rj3bKKQCeHg
+
+channelid = "UCJhjE7wbdYAae1G25m0tHAA" #アキくんチャンネル　UCt9qik4Z-_J-rj3bKKQCeHg
+
 credentials_path = "youtubeapiplac.py-oauth2.json"
 url = "https://www.googleapis.com/youtube/v3/search?part=snippet" 
 url += "&channelId=" + channelid + "&type=video&eventType=live"
+
+videoid = ""
 
 count_word = {
     "アキくんすき" : 0,
@@ -28,7 +34,7 @@ count_word = {
 
 def get_comment(chatids):
     return chat_dic[chatids]
-
+"""
 def live_status():
     store = Storage(credentials_path)
     credentials = store.get()
@@ -41,6 +47,24 @@ def live_status():
         return False
     else:
         return True
+"""
+def live_status():
+    channel_site_url = "https://www.youtube.com/channel/"
+    channel_site_url += channelid
+    html_data = requests.get(channel_site_url)
+    parsed = bs4.BeautifulSoup(html_data.content, "html.parser")
+
+    d_element_1 = parsed.find_all("li", text=re.compile("ライブ配信中"))
+    d_element_2 = parsed.find_all("li", text=re.compile("人が視聴中"))
+
+    if len(d_element_1) > 0 and len(d_element_2) > 0:
+        watch = parsed.find("a", class_="yt-uix-sessionlink", href=re.compile("/watch"))
+        ref = watch.get("href")
+        global videoid
+        videoid = str(ref.lstrip("/watch?v="))
+        return True
+    else:
+        return False
 
 def print_live_not_active():
     elapsed_time = time.time() - start_time
@@ -62,8 +86,11 @@ def print_result():
     suki_num = count_word["アキくんすき"] + count_word["アキくん好き"]
     print("合計アキくんすき = {0}".format(suki_num))
     
-#video ID取得
-while True:
+
+while not live_status():
+    print_live_not_active()
+    time.sleep(3)
+    """
     if not live_status:
         break
 
@@ -81,9 +108,18 @@ while True:
         time.sleep(3)
         continue
     else:
-        print("コメント取得を開始します")
+        
         break
+    """
 
+store = Storage(credentials_path)
+credentials = store.get()
+
+http = credentials.authorize(httplib2.Http())
+res, data = http.request(url)
+jtemp = json.loads(data)
+
+print("コメント取得を開始します")
 #チャットID取得
 get_chatid_url = "https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id="
 get_chatid_url += videoid
