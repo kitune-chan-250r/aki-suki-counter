@@ -35,20 +35,6 @@ count_word = {
 def get_comment(chatids):
     return chat_dic[chatids]
 
-"""apiからライブ状況判別
-def live_status():
-    store = Storage(credentials_path)
-    credentials = store.get()
-    http = credentials.authorize(httplib2.Http())
-    res, data = http.request(url)
-    jtemp = json.loads(data)
-    try:
-        jtemp["items"][0]["snippet"]["liveBroadcastContent"]
-    except IndexError:
-        return False
-    else:
-        return True
-"""
 def live_status():
     channel_site_url = "https://www.youtube.com/channel/"
     channel_site_url += channelid
@@ -91,27 +77,7 @@ def print_result():
 while not live_status():
     print_live_not_active()
     time.sleep(3)
-    """
-    if not live_status:
-        break
 
-    store = Storage(credentials_path)
-    credentials = store.get()
-
-    http = credentials.authorize(httplib2.Http())
-    res, data = http.request(url)
-    jtemp = json.loads(data)
-
-    try:
-        videoid = jtemp["items"][0]["id"]["videoId"]
-    except (IndexError, KeyError):
-        print_live_not_active()
-        time.sleep(3)
-        continue
-    else:
-        
-        break
-    """
 
 store = Storage(credentials_path)
 credentials = store.get()
