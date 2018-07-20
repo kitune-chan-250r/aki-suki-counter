@@ -133,7 +133,7 @@ while live_status():
         ava_c_id = list(available_chatid)
         #アキくんすき判定
         for idbox in ava_c_id:
-            sys.stdout.write("\r\033[K" + get_comment(idbox) + "\n>>now count=" \
+            sys.stdout.write("\r\033[K" + get_comment(idbox) + "\n>>Current count=" \
                             + str(count_word["アキくんすき"] + count_word["アキくん好き"]))
             sys.stdout.flush()
             aki_suki_counter(get_comment(idbox))
